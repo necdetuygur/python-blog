@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Blog</title>
+    <script src="jquery.min.js"></script>
+    <link rel="stylesheet" href="bootstrap.min.css" />
+  </head>
+  <body>
+    <div class="container">
+      <div id="YaziListesi" class="row"></div>
+    </div>
+    <script>
+      function YaziGetAll() {
+        $.ajax({
+          type: "GET",
+          url: "http://localhost:4040/Yazi",
+          success: function (res) {
+            for (var i in res) {
+              row = res[i];
+              $("#YaziListesi").append(`
+              <div class="col-md-3">
+                <div class="card m-3">
+                  <div class="card-header">
+                    ${row.Baslik} #${row.Tag}
+                  </div>
+                  <div class="card-body">
+                    <small><b>${row.AltBaslik}</b></small>
+                    <p class="card-text">${row.Icerik}</p>
+                  </div>
+                </div>
+              </div>
+            `);
+            }
+          },
+          dataType: "json",
+          contentType: "application/json",
+        });
+      }
+
+      YaziGetAll();
+    </script>
+  </body>
+</html>

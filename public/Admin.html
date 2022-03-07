@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Yazi</title>
+    <script src="jquery.min.js"></script>
+    <link rel="stylesheet" href="bootstrap.min.css" />
+  </head>
+  <body>
+    <div class="container">
+      <div><a href="/" class="btn btn-primary mt-3">Geri</a></div>
+      <div class="card mt-3">
+        <div class="card-header">Yazi Listesi</div>
+        <div class="card-body">
+          <table class="table table-bordered">
+            <thead>
+              <tr>
+                <th>Baslik</th>
+                <th>AltBaslik</th>
+                <th>Tag</th>
+                <th>Icerik</th>
+
+                <th>İşlemler</th>
+              </tr>
+            </thead>
+            <tbody id="YaziListesi"></tbody>
+          </table>
+        </div>
+      </div>
+
+      <div class="row">
+        <div class="col-md-6">
+          <div class="card mt-3">
+            <div class="card-header">Yazi Ekle</div>
+            <div class="card-body">
+              <div class="input-group mb-3">
+                <span class="input-group-text">Baslik</span>
+                <input type="text" id="ekle_Baslik" class="form-control" />
+              </div>
+              <div class="input-group mb-3">
+                <span class="input-group-text">AltBaslik</span>
+                <input type="text" id="ekle_AltBaslik" class="form-control" />
+              </div>
+              <div class="input-group mb-3">
+                <span class="input-group-text">Tag</span>
+                <input type="text" id="ekle_Tag" class="form-control" />
+              </div>
+              <div class="input-group mb-3">
+                <span class="input-group-text">Icerik</span>
+                <input type="text" id="ekle_Icerik" class="form-control" />
+              </div>
+
+              <button
+                type="button"
+                class="btn btn-dark"
+                onclick="YaziAdd()"
+              >
+                Kaydet
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <div class="col-md-6">
+          <div class="card mt-3" id="guncelle" style="display: none">
+            <div class="card-header">Yazi Güncelle</div>
+            <div class="card-body">
+              <input type="hidden" id="guncelle_YaziID" />
+              <div class="input-group mb-3">
+                <span class="input-group-text">Marka</span>
+                <input type="text" id="guncelle_Baslik" class="form-control" />
+              </div>
+              <div class="input-group mb-3">
+                <span class="input-group-text">Model</span>
+                <input type="text" id="guncelle_AltBaslik" class="form-control" />
+              </div>
+              <div class="input-group mb-3">
+                <span class="input-group-text">Çip No</span>
+                <input type="text" id="guncelle_Tag" class="form-control" />
+              </div>
+              <div class="input-group mb-3">
+                <span class="input-group-text">Temin Tarihi</span>
+                <input
+                  type="text"
+                  id="guncelle_Icerik"
+                  class="form-control"
+                />
+              </div>
+
+              <button
+                type="button"
+                class="btn btn-dark"
+                onclick="YaziSet()"
+              >
+                Kaydet
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <script>
+      function YaziAdd() {
+        data = JSON.stringify({
+          Baslik: $("#ekle_Baslik").val(),
+          AltBaslik: $("#ekle_AltBaslik").val(),
+          Tag: $("#ekle_Tag").val(),
+          Icerik: $("#ekle_Icerik").val(),
+        });
+        $.ajax({
+          type: "POST",
+          url: "http://localhost:4040/Yazi",
+          data: data,
+          success: function (res) {
+            alert("Tamamlandı");
+            window.top.location.href = window.top.location.href;
+          },
+          dataType: "json",
+          contentType: "application/json",
+        });
+      }
+
+      function YaziDelete(id) {
+        $.ajax({
+          type: "DELETE",
+          url: "http://localhost:4040/Yazi/" + id,
+          success: function (res) {
+            alert("Tamamlandı");
+            window.top.location.href = window.top.location.href;
+          },
+          dataType: "json",
+          contentType: "application/json",
+        });
+      }
+
+      function YaziGetAll() {
+        $.ajax({
+          type: "GET",
+          url: "http://localhost:4040/Yazi",
+          success: function (res) {
+            for (var i in res) {
+              row = res[i];
+              $("#YaziListesi").append(`
+                <tr>
+                    <td>${row.Baslik}</td>
+                    <td>${row.AltBaslik}</td>
+                    <td>${row.Tag}</td>
+                    <td>${row.Icerik}</td>
+               
+                    <td>
+                        <button type="button" class="btn btn-primary btn-sm" onclick="YaziGetById(${row.YaziID})">Güncelle</button>
+                        <button type="button" class="btn btn-danger btn-sm" onclick="YaziDelete(${row.YaziID})">Sil</button>
+                    </td>
+                </tr>
+            `);
+            }
+          },
+          dataType: "json",
+          contentType: "application/json",
+        });
+      }
+
+      function YaziGetById(id) {
+        $("#guncelle").fadeIn(1e3);
+        $.ajax({
+          type: "GET",
+          url: "http://localhost:4040/Yazi/" + id,
+          success: function (res) {
+            $("#guncelle_YaziID").val(res.YaziID);
+            $("#guncelle_Baslik").val(res.Baslik);
+            $("#guncelle_AltBaslik").val(res.AltBaslik);
+            $("#guncelle_Tag").val(res.Tag);
+            $("#guncelle_Icerik").val(res.Icerik);
+          },
+          dataType: "json",
+          contentType: "application/json",
+        });
+      }
+
+      function YaziSet() {
+        data = JSON.stringify({
+          YaziID: $("#guncelle_YaziID").val(),
+          Baslik: $("#guncelle_Baslik").val(),
+          AltBaslik: $("#guncelle_AltBaslik").val(),
+          Tag: $("#guncelle_Tag").val(),
+          Icerik: $("#guncelle_Icerik").val(),
+        });
+        $.ajax({
+          type: "PUT",
+          url: "http://localhost:4040/Yazi",
+          data: data,
+          success: function (res) {
+            alert("Tamamlandı");
+            window.top.location.href = window.top.location.href;
+          },
+          dataType: "json",
+          contentType: "application/json",
+        });
+      }
+
+      YaziGetAll();
+    </script>
+  </body>
+</html>
