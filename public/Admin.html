@@ -14,14 +14,14 @@
       <div><a href="/" class="btn btn-primary mt-3">Geri</a></div>
       <div class="card mt-3">
         <div class="card-header">Yazi Listesi</div>
-        <div class="card-body">
+        <div class="card-body p-0">
           <table class="table table-bordered">
             <thead>
               <tr>
-                <th>Baslik</th>
-                <th>AltBaslik</th>
+                <th>Başlık</th>
+                <th>Alt Başlık</th>
                 <th>Tag</th>
-                <th>Icerik</th>
+                <th>İçerik</th>
 
                 <th>İşlemler</th>
               </tr>
@@ -37,11 +37,11 @@
             <div class="card-header">Yazi Ekle</div>
             <div class="card-body">
               <div class="input-group mb-3">
-                <span class="input-group-text">Baslik</span>
+                <span class="input-group-text">Başlık</span>
                 <input type="text" id="ekle_Baslik" class="form-control" />
               </div>
               <div class="input-group mb-3">
-                <span class="input-group-text">AltBaslik</span>
+                <span class="input-group-text">Alt Başlık</span>
                 <input type="text" id="ekle_AltBaslik" class="form-control" />
               </div>
               <div class="input-group mb-3">
@@ -49,7 +49,7 @@
                 <input type="text" id="ekle_Tag" class="form-control" />
               </div>
               <div class="input-group mb-3">
-                <span class="input-group-text">Icerik</span>
+                <span class="input-group-text">İçerik</span>
                 <textarea id="ekle_Icerik" name="ekle_Icerik" cols="30" rows="10" class="form-control"></textarea>
               </div>
 
@@ -70,24 +70,20 @@
             <div class="card-body">
               <input type="hidden" id="guncelle_YaziID" />
               <div class="input-group mb-3">
-                <span class="input-group-text">Marka</span>
+                <span class="input-group-text">Başlık</span>
                 <input type="text" id="guncelle_Baslik" class="form-control" />
               </div>
               <div class="input-group mb-3">
-                <span class="input-group-text">Model</span>
+                <span class="input-group-text">Alt Başlık</span>
                 <input type="text" id="guncelle_AltBaslik" class="form-control" />
               </div>
               <div class="input-group mb-3">
-                <span class="input-group-text">Çip No</span>
+                <span class="input-group-text">Tag</span>
                 <input type="text" id="guncelle_Tag" class="form-control" />
               </div>
               <div class="input-group mb-3">
-                <span class="input-group-text">Temin Tarihi</span>
-                <input
-                  type="text"
-                  id="guncelle_Icerik"
-                  class="form-control"
-                />
+                <span class="input-group-text">İçerik</span>
+                <textarea id="guncelle_Icerik" name="guncelle_Icerik" cols="30" rows="10" class="form-control"></textarea>
               </div>
 
               <button
@@ -104,6 +100,7 @@
     </div>
     <script>
       CKEDITOR.replace('ekle_Icerik');
+      CKEDITOR.replace('guncelle_Icerik');
       function YaziAdd() {
         data = JSON.stringify({
           Baslik: $("#ekle_Baslik").val(),
@@ -174,7 +171,7 @@
             $("#guncelle_Baslik").val(res.Baslik);
             $("#guncelle_AltBaslik").val(res.AltBaslik);
             $("#guncelle_Tag").val(res.Tag);
-            $("#guncelle_Icerik").val(res.Icerik);
+            CKEDITOR.instances["guncelle_Icerik"].setData(res.Icerik);
           },
           dataType: "json",
           contentType: "application/json",
@@ -187,7 +184,7 @@
           Baslik: $("#guncelle_Baslik").val(),
           AltBaslik: $("#guncelle_AltBaslik").val(),
           Tag: $("#guncelle_Tag").val(),
-          Icerik: $("#guncelle_Icerik").val(),
+          Icerik: CKEDITOR.instances['guncelle_Icerik'].getData(),
         });
         $.ajax({
           type: "PUT",
