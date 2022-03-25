@@ -7,6 +7,7 @@
     <title>Yazi</title>
     <script src="jquery.min.js"></script>
     <link rel="stylesheet" href="bootstrap.min.css" />
+    <script src="https://cdn.ckeditor.com/4.18.0/standard/ckeditor.js"></script>
   </head>
   <body>
     <div class="container">
@@ -49,7 +50,7 @@
               </div>
               <div class="input-group mb-3">
                 <span class="input-group-text">Icerik</span>
-                <input type="text" id="ekle_Icerik" class="form-control" />
+                <textarea id="ekle_Icerik" name="ekle_Icerik" cols="30" rows="10" class="form-control"></textarea>
               </div>
 
               <button
@@ -102,12 +103,13 @@
       </div>
     </div>
     <script>
+      CKEDITOR.replace('ekle_Icerik');
       function YaziAdd() {
         data = JSON.stringify({
           Baslik: $("#ekle_Baslik").val(),
           AltBaslik: $("#ekle_AltBaslik").val(),
           Tag: $("#ekle_Tag").val(),
-          Icerik: $("#ekle_Icerik").val(),
+          Icerik: CKEDITOR.instances['ekle_Icerik'].getData(),
         });
         $.ajax({
           type: "POST",
